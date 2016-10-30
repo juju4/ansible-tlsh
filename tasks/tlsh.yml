@@ -12,9 +12,7 @@
 
 - name: TLSH dependencies
   package: name={{item}} state=present
-  with_items:
-    - cmake
-    - make
+  with_items: "{{ tlsh_build_deps }}"
 
 # Change to CMakeLists.txt ?
 
