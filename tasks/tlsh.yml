@@ -1,0 +1,55 @@
+---
+
+- name: git clone TrendMicro TLSH
+  git:
+    repo=https://github.com/trendmicro/tlsh.git
+    dest={{ toolsetdir }}/tlsh
+    version={{ tlsh_version }}
+    force=yes
+
+- stat: path=/usr/local/bin/tlsh
+  register: tlsh
+
+- name: TLSH dependencies
+  package: name={{item}} state=present
+  with_items:
+    - cmake
+    - make
+
+# Change to CMakeLists.txt ?
+
+- name: TLSH build
+  command: "{{ item }} chdir={{ toolsetdir }}/tlsh creates={{ toolsetdir }}/tlsh/lib/libtlsh.so"
+  with_items:
+    - ./make.sh
+
+- block:
+    - name: TLSH Python bindings
+      command: "{{ item }} chdir={{ toolsetdir }}/tlsh/py_ext creates={{ tlsh_python_bindings }}"
+      with_items:
+        - python setup.py build
+        - python setup.py install
+  when: tlsh_virtualenv_path is not defined or tlsh_virtualenv_path == ''
+
+- block:
+    - name: virtualenv dependencies
+      package: name={{ item }} state=present
+      with_items:
+        - python-virtualenv
+        - python-pip
+    - name: ensure virtualenv user {{ tlsh_virtualenv_user }} exists
+      user: "name={{ tlsh_virtualenv_user }} home={{ tlsh_virtualenv_home }} state=present"
+    - name: build TLSH Python bindings - virtualenv
+      command: "{{ item }} chdir={{ toolsetdir }}/tlsh/py_ext creates={{ tlsh_virtualenv_path }}/lib/python2.7/site-packages/tlsh.so"
+      with_items:
+        - "{{ tlsh_virtualenv_path }}/bin/python setup.py build"
+    - name: install TLSH Python bindings - virtualenv
+#      pip: "name=file://{{ toolsetdir }}/tlsh/py_ext virtualenv={{ tlsh_virtualenv_path }}"
+      command: "{{ item }} chdir={{ toolsetdir }}/tlsh/py_ext creates={{ tlsh_virtualenv_path }}/lib/python2.7/site-packages/tlsh.so"
+      with_items:
+        - "{{ tlsh_virtualenv_path }}/bin/python setup.py install"
+      become: yes
+      become_user: "{{ tlsh_virtualenv_user }}"
+  when: tlsh_virtualenv_path is defined and tlsh_virtualenv_path != ''
+
+

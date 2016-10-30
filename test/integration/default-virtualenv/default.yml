@@ -1,0 +1,8 @@
+---
+
+- hosts: all
+  vars:
+    - tlsh_virtualenv_path: /root/env
+  roles:
+    - juju4.tlsh
+
