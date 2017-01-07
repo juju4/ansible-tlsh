@@ -13,7 +13,7 @@ describe file('/opt/tools/tlsh/lib/libtlsh.so') do
   it { should be_readable }
 end
 
-describe file('/root/env/lib/python2.7/site-packages/tlsh.so') do
+describe file('/home/test/env/lib/python2.7/site-packages/tlsh.so') do
   it { should be_readable }
 end
 

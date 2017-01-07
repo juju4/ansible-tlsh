@@ -2,7 +2,9 @@
 
 - hosts: all
   vars:
-    - tlsh_virtualenv_path: /root/env
+    - tlsh_virtualenv_user: test
+    - tlsh_virtualenv_home: /home/test
+    - tlsh_virtualenv_path: /home/test/env
   roles:
     - juju4.tlsh
 

@@ -4,7 +4,10 @@ toolsetdir: /opt/tools
 #tlsh_version: v3.4.5
 tlsh_version: HEAD
 
-## if undefined, global install, else in corresponding virtualenv
+## if undefined/empty, global install, else in corresponding virtualenv
+tlsh_virtualenv_path: ''
+tlsh_virtualenv_user: ''
+tlsh_virtualenv_home: ''
 #tlsh_virtualenv_path: /path/to/env
 #tlsh_virtualenv_user: user
 #tlsh_virtualenv_home: /path/home
