@@ -1,4 +1,5 @@
-[![Build Status](https://travis-ci.org/juju4/ansible-tlsh.svg?branch=master)](https://travis-ci.org/juju4/ansible-tlsh)
+[![Build Status - Master](https://travis-ci.org/juju4/ansible-tlsh.svg?branch=master)](https://travis-ci.org/juju4/ansible-tlsh)
+[![Build Status - Devel](https://travis-ci.org/juju4/ansible-tlsh.svg?branch=devel)](https://travis-ci.org/juju4/ansible-tlsh/branches)
 # TLSH ansible role
 
 Ansible role to setup TLSH - Trend Micro Locality Sensitive Hash
@@ -10,6 +11,7 @@ https://github.com/trendmicro/tlsh
 It was tested on the following versions:
  * 1.9
  * 2.0
+ * 2.2
 
 ### Operating systems
 
