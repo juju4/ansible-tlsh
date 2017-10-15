@@ -5,7 +5,8 @@
     repo=https://github.com/trendmicro/tlsh.git
     dest={{ toolsetdir }}/tlsh
     version={{ tlsh_version }}
-    force=yes
+    update={{ tlsh_git_update | default('no') }}
+    force=no
 
 - stat: path=/usr/local/bin/tlsh
   register: tlsh
@@ -15,11 +16,18 @@
   with_items: "{{ tlsh_build_deps }}"
 
 # Change to CMakeLists.txt ?
+- name: Ensure Shared library setting as defined
+  replace:
+    dest: "{{ toolsetdir }}/tlsh/src/CMakeLists.txt"
+    regexp: '^set\(TLSH_SHARED_LIBRARY .*\)'
+    replace: "set(TLSH_SHARED_LIBRARY {% if tlsh_shared_lib %}1{% else %}0{% endif %})"
+    backup: yes
 
 - name: TLSH build
-  command: "{{ item }} chdir={{ toolsetdir }}/tlsh creates={{ toolsetdir }}/tlsh/lib/libtlsh.so"
-  with_items:
-    - ./make.sh
+  command: "./make.sh"
+  args:
+    chdir: "{{ toolsetdir }}/tlsh"
+    creates: "{{ toolsetdir }}/tlsh/lib/libtlsh.a"
 
 - block:
     - name: TLSH Python bindings
