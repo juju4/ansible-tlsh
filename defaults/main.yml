@@ -13,4 +13,8 @@ tlsh_virtualenv_home: ''
 #tlsh_virtualenv_path: /path/to/env
 #tlsh_virtualenv_user: user
 #tlsh_virtualenv_home: /path/home
+#tlsh_python_bin: python2
+#tlsh_python_binding: "{{ tlsh_virtualenv_path }}/lib/python2.7/site-packages/tlsh.so"
+tlsh_python_bin: python3
+tlsh_python_binding: "/usr/local/lib/python3.6/dist-packages/tlsh.cpython-36m-x86_64-linux-gnu.so"
 

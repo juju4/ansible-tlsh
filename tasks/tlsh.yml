@@ -31,10 +31,13 @@
 
 - block:
     - name: TLSH Python bindings
-      command: "{{ item }} chdir={{ toolsetdir }}/tlsh/py_ext creates={{ tlsh_python_bindings }}"
+      command: "{{ item }}"
+      args:
+        chdir: "{{ toolsetdir }}/tlsh/py_ext"
+        creates: "{{ tlsh_python_binding }}"
       with_items:
-        - python setup.py build
-        - python setup.py install
+        - "{{ tlsh_python_bin }} setup.py build"
+        - "{{ tlsh_python_bin }} setup.py install"
   when: tlsh_virtualenv_path is not defined or tlsh_virtualenv_path == ''
 
 - block:
@@ -46,7 +49,7 @@
     - name: ensure virtualenv user {{ tlsh_virtualenv_user }} exists
       user: "name={{ tlsh_virtualenv_user }} home={{ tlsh_virtualenv_home }} state=present"
     - name: check if binding exists
-      stat: path="{{ tlsh_virtualenv_path }}/lib/python2.7/site-packages/tlsh.so"
+      stat: path="{{ tlsh_python_binding }}"
       register: tlshso
     - name: temporary change permissions for virtualenv user
       file: dest={{ toolsetdir }}/tlsh/py_ext state=directory owner={{ tlsh_virtualenv_user }} recurse=yes
@@ -54,8 +57,8 @@
     - name: build TLSH Python bindings - virtualenv
       command: "{{ item.c }} chdir={{ item.d }} creates={{ item.t }}"
       with_items:
-        - { c: "virtualenv {{ tlsh_virtualenv_path }}", d: "{{ tlsh_virtualenv_home }}", t: "{{ tlsh_virtualenv_path }}" }
-        - { c: "{{ tlsh_virtualenv_path }}/bin/python setup.py install", d: "{{ toolsetdir }}/tlsh/py_ext", t: "{{ tlsh_virtualenv_path }}/lib/python2.7/site-packages/tlsh.so" }
+        - { c: "virtualenv -p {{ tlsh_python_bin }} {{ tlsh_virtualenv_path }}", d: "{{ tlsh_virtualenv_home }}", t: "{{ tlsh_virtualenv_path }}" }
+        - { c: "{{ tlsh_virtualenv_path }}/bin/{{ tlsh_python_bin }} setup.py install", d: "{{ toolsetdir }}/tlsh/py_ext", t: "{{ tlsh_python_binding | regex_replace('/usr', tlsh_virtualenv_path) }}" }
       become: yes
       become_user: "{{ tlsh_virtualenv_user }}"
     - name: restore permissions

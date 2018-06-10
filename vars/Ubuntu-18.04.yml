@@ -6,5 +6,6 @@ tlsh_build_deps:
     - gcc
     - g++
     - python-dev
+    - python3-dev
 
 tlsh_python_bindings: /usr/local/lib/python2.7/dist-packages/tlsh.so
