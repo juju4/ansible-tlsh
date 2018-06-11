@@ -7,4 +7,5 @@ tlsh_build_deps:
     - g++
     - python-dev
 
-tlsh_python_bindings: /usr/local/lib/python2.7/dist-packages/tlsh.so
+tlsh_python_bin: "python"
+tlsh_python_bindings: "/usr/local/lib/python2.7/dist-packages/tlsh.so"

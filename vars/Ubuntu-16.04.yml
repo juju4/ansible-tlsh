@@ -8,4 +8,5 @@ tlsh_build_deps:
     - python-dev
     - python3-dev
 
-tlsh_python_bindings: /usr/local/lib/python2.7/dist-packages/tlsh.so
+tlsh_python_bin: "{% if tlsh_python_version == 2 %}python2{% else %}python3{% endif %}"
+tlsh_python_bindings: "{% if tlsh_python_version == 2 %}/usr/local/lib/python2.7/dist-packages/tlsh.so{% else %}/usr/local/lib/python3.5/dist-packages/tlsh.cpython-35m-x86_64-linux-gnu.so{% endif %}"
