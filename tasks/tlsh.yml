@@ -50,6 +50,8 @@
       with_items:
         - python-virtualenv
         - python-pip
+      register: pkg_result
+      until: pkg_result is success
     - name: ensure virtualenv user {{ tlsh_virtualenv_user }} exists
       user: "name={{ tlsh_virtualenv_user }} home={{ tlsh_virtualenv_home }} state=present"
     - name: check if binding exists
