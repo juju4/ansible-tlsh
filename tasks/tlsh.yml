@@ -8,12 +8,14 @@
     update={{ tlsh_git_update | default('no') }}
     force=no
 
-- stat: path=/usr/local/bin/tlsh
+- name: Check if tlsh binary exists
+  stat: path=/usr/local/bin/tlsh
   register: tlsh
 
 - name: TLSH dependencies
-  package: name={{item}} state=present
-  with_items: "{{ tlsh_build_deps }}"
+  package: name={{ tlsh_build_deps }} state=present
+  register: pkg_result
+  until: pkg_result is success
 
 # Change to CMakeLists.txt ?
 - name: Ensure Shared library setting as defined
@@ -40,7 +42,7 @@
       with_items:
         - "{{ tlsh_python_bin }} setup.py build"
         - "{{ tlsh_python_bin }} setup.py install"
-  when: tlsh_virtualenv_path is not defined or tlsh_virtualenv_path == ''
+  when: tlsh_virtualenv_path is not defined or not tlsh_virtualenv_path
 
 - block:
     - name: virtualenv dependencies
@@ -59,13 +61,17 @@
     - name: build TLSH Python bindings - virtualenv
       command: "{{ item.c }} chdir={{ item.d }} creates={{ item.t }}"
       with_items:
-        - { c: "virtualenv -p {{ tlsh_python_bin }} {{ tlsh_virtualenv_path }}", d: "{{ tlsh_virtualenv_home }}", t: "{{ tlsh_virtualenv_path }}" }
-        - { c: "{{ tlsh_virtualenv_path }}/bin/{{ tlsh_python_bin }} setup.py install", d: "{{ toolsetdir }}/tlsh/py_ext", t: "{{ tlsh_python_bindings | regex_replace('/usr', tlsh_virtualenv_path) }}" }
+        - { c: "virtualenv -p {{ tlsh_python_bin }} {{ tlsh_virtualenv_path }}",
+            d: "{{ tlsh_virtualenv_home }}",
+            t: "{{ tlsh_virtualenv_path }}"
+          }
+        - { c: "{{ tlsh_virtualenv_path }}/bin/{{ tlsh_python_bin }} setup.py install",
+            d: "{{ toolsetdir }}/tlsh/py_ext",
+            t: "{{ tlsh_python_bindings | regex_replace('/usr', tlsh_virtualenv_path) }}"
+          }
       become: yes
       become_user: "{{ tlsh_virtualenv_user }}"
     - name: restore permissions
       file: dest={{ toolsetdir }}/tlsh/py_ext state=directory owner=root recurse=yes
       when: not tlshso.stat.exists
-  when: tlsh_virtualenv_path is defined and tlsh_virtualenv_path != ''
-
-
+  when: tlsh_virtualenv_path is defined and tlsh_virtualenv_path

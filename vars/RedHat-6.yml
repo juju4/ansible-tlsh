@@ -7,7 +7,6 @@ tlsh_build_deps:
     - gcc-c++
     - python-devel
 
-tlsh_python_bindings: /usr/lib64/python2.7/site-packages/tlsh.so
-
 tlsh_python_bin: python
-tlsh_python_bindings: "/usr/local/lib/python2.7/site-packages/tlsh.so"
+tlsh_python_bindings: /usr/lib64/python2.7/site-packages/tlsh.so
+#tlsh_python_bindings: "/usr/local/lib/python2.7/site-packages/tlsh.so"

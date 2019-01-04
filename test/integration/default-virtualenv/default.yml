@@ -7,4 +7,3 @@
     - tlsh_virtualenv_path: /home/test/env
   roles:
     - juju4.tlsh
-

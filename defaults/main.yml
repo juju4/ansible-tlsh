@@ -15,4 +15,3 @@ tlsh_virtualenv_home: ''
 #tlsh_virtualenv_home: /path/home
 #tlsh_python_version: 2
 tlsh_python_version: 3
-
