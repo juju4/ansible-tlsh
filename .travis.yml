@@ -64,6 +64,9 @@ script:
 ## travis/docker: Errno::EROFS: Read-only file system @ dir_s_mkdir - /etc/ansible/roles/juju4.tlsh/test/integration/default/serverspec/.bundle
 #  - 'sudo docker exec --tty "$(cat ${container_id})" /etc/ansible/roles/juju4.tlsh/test/integration/default/serverspec/run-local-tests.sh'
 
+after_script:
+  - 'sudo docker exec --tty "$(cat ${container_id})" find /usr/local/ -iname "*tlsh*"'
+
   # Clean up
   - 'sudo docker stop "$(cat ${container_id})"'
 
