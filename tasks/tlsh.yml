@@ -47,9 +47,7 @@
 - block:
     - name: virtualenv dependencies
       package: name={{ item }} state=present
-      with_items:
-        - python-virtualenv
-        - python-pip
+      with_items: "{{ tlsh_python_pkgs | default([ 'python-virtualenv', 'python-pip']) }}"
       register: pkg_result
       until: pkg_result is success
     - name: ensure virtualenv user {{ tlsh_virtualenv_user }} exists
