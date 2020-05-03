@@ -20,14 +20,10 @@ provisioner:
   ansible_connection: ssh
 
 platforms:
+  - name: ubuntu-20.04
   - name: ubuntu-18.04
-  - name: ubuntu-16.04
-  - name: ubuntu-14.04
-  - name: ubuntu-12.04
+  - name: centos-8
   - name: centos-7
-#  - name: centos-6
-## FIXME! 'Installing Chef Omnibus to install busser to run tests' not supported = can disable
-##	' sl = self._semlock = _multiprocessing.SemLock(kind, value, maxvalue)\nOSError: [Errno 2] No such file or directory'
 #  - name: alpine-3.4
 
 suites:
@@ -37,11 +33,9 @@ suites:
   - name: default-virtualenv
     run_list:
     includes:
+      - ubuntu-20.04
       - ubuntu-18.04
-      - ubuntu-16.04
-      - ubuntu-14.04
-      - centos-7
-#      - centos-6
+      - centos-8
     provisioner:
       name: ansible_playbook
       playbook: test/integration/default-virtualenv/default.yml
