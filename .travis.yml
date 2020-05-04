@@ -73,6 +73,7 @@ script:
 #  - 'sudo docker exec --tty "$(cat ${container_id})" /etc/ansible/roles/juju4.tlsh/test/integration/${suite}/serverspec/run-local-tests.sh'
 
 after_script:
+  - 'sudo docker exec --tty "$(cat ${container_id})" find /home/test/env/ -iname "*tlsh*"'
   - 'sudo docker exec --tty "$(cat ${container_id})" find /usr/local/ -iname "*tlsh*"'
 
   # Clean up
