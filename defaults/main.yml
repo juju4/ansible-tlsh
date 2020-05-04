@@ -13,5 +13,8 @@ tlsh_virtualenv_home: ''
 #tlsh_virtualenv_path: /path/to/env
 #tlsh_virtualenv_user: user
 #tlsh_virtualenv_home: /path/home
+tlsh_ownership:
+  - { d: "{{ tlsh_virtualenv_home }}/.cache/pip", s: directory, m: '0755', o: "{{ tlsh_virtualenv_user }}" }
+  - { d: "{{ toolsetdir }}/tlsh/py_ext/build", s: directory, m: '0755', o: "{{ tlsh_virtualenv_user }}" }
 #tlsh_python_version: 2
 tlsh_python_version: 3

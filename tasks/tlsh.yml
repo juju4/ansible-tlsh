@@ -55,9 +55,13 @@
     - name: check if binding exists
       stat: path="{{ tlsh_python_bindings }}"
       register: tlshso
-    - name: temporary change permissions for virtualenv user
-      file: dest={{ toolsetdir }}/tlsh/py_ext state=directory owner={{ tlsh_virtualenv_user }} recurse=yes
-      when: not tlshso.stat.exists
+    - name: ensure directories ownership if needed, like pip cache
+      file:
+        dest: "{{ item.d }}"
+        state: "{{ item.s }}"
+        mode: "{{ item.m }}"
+        owner: "{{ item.o }}"
+      with_items: "{{ tlsh_ownership | default([]) }}"
     - name: build TLSH Python bindings - virtualenv
       command: "{{ item.c }} chdir={{ item.d }} creates={{ item.t }}"
       with_items:
@@ -67,11 +71,8 @@
           }
         - { c: "{{ tlsh_virtualenv_path }}/bin/{{ tlsh_python_bin }} setup.py install",
             d: "{{ toolsetdir }}/tlsh/py_ext",
-            t: "{{ tlsh_python_bindings | regex_replace('/usr', tlsh_virtualenv_path) }}"
+            t: "{{ tlsh_python_bindings | regex_replace('/usr/local', tlsh_virtualenv_path) }}"
           }
       become: yes
       become_user: "{{ tlsh_virtualenv_user }}"
-    - name: restore permissions
-      file: dest={{ toolsetdir }}/tlsh/py_ext state=directory owner=root recurse=yes
-      when: not tlshso.stat.exists
   when: tlsh_virtualenv_path is defined and tlsh_virtualenv_path

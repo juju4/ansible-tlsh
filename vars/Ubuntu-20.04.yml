@@ -13,4 +13,4 @@ tlsh_python_pkgs:
   - python3-pip
 
 tlsh_python_bin: "python3"
-tlsh_python_bindings: "/usr/local/lib/python3.8/dist-packages/tlsh.cpython-38-x86_64-linux-gnu.so"
+tlsh_python_bindings: "{% if tlsh_virtualenv_path|string %}{{ tlsh_virtualenv_path }}/lib/python3.8/site-packages/tlsh.cpython-38-x86_64-linux-gnu.so{% else %}/usr/local/lib/python3.8/dist-packages/tlsh.cpython-38-x86_64-linux-gnu.so{% endif %}"
