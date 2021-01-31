@@ -1,0 +1,14 @@
+---
+
+tlsh_build_deps:
+  - cmake
+  - make
+  - gcc
+  - gcc-c++
+  - libstdc++
+  - libstdc++-static
+  - python3-devel
+  - diffutils
+
+tlsh_python_bin: "python3"
+tlsh_python_bindings: "/usr/local/lib64/python3.6/site-packages/tlsh.cpython-36m-x86_64-linux-gnu.so"
