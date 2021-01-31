@@ -5,29 +5,20 @@ galaxy_info:
   description: TLSH - Trend Micro Locality Sensitive Hash
   license: BSD
   min_ansible_version: 2.0
-  #
-  # Below are all platforms currently available. Just uncomment
-  # the ones that apply to your role. If you don't see your
-  # platform on this list, let us know and we'll get it added!
-  #
   platforms:
-  - name: EL
-    versions:
-     - 6
-     - 7
-  - name: Ubuntu
-    versions:
-    - precise
-    - trusty
-    - xenial
-    - bionic
-    - focal
-  #
-  # Below are all categories currently available. Just as with
-  # the platforms above, uncomment those that apply to your role.
-  #
+    - name: EL
+      versions:
+        - 6
+        - 7
+    - name: Ubuntu
+      versions:
+        - precise
+        - trusty
+        - xenial
+        - bionic
+        - focal
   galaxy_tags:
-  - system
-  - security
+    - system
+    - security
 dependencies:
   - juju4.redhat_epel

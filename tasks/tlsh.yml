@@ -23,6 +23,7 @@
     dest: "{{ toolsetdir }}/tlsh/src/CMakeLists.txt"
     regexp: '^set\(TLSH_SHARED_LIBRARY .*\)'
     replace: "set(TLSH_SHARED_LIBRARY {% if tlsh_shared_lib %}1{% else %}0{% endif %})"
+    mode: '0644'
     backup: yes
 
 - name: TLSH build
@@ -51,9 +52,13 @@
       register: pkg_result
       until: pkg_result is success
     - name: ensure virtualenv user {{ tlsh_virtualenv_user }} exists
-      user: "name={{ tlsh_virtualenv_user }} home={{ tlsh_virtualenv_home }} state=present"
+      user:
+        name: "{{ tlsh_virtualenv_user }}"
+        home: "{{ tlsh_virtualenv_home }}"
+        state: present
     - name: check if binding exists
-      stat: path="{{ tlsh_python_bindings }}"
+      stat:
+        path: "{{ tlsh_python_bindings }}"
       register: tlshso
     - name: ensure directories ownership if needed, like pip cache
       file:
@@ -68,11 +73,11 @@
         - { c: "virtualenv -p {{ tlsh_python_bin }} {{ tlsh_virtualenv_path }}",
             d: "{{ tlsh_virtualenv_home }}",
             t: "{{ tlsh_virtualenv_path }}"
-          }
+        }
         - { c: "{{ tlsh_virtualenv_path }}/bin/{{ tlsh_python_bin }} setup.py install",
             d: "{{ toolsetdir }}/tlsh/py_ext",
             t: "{{ tlsh_python_bindings | regex_replace('/usr/local', tlsh_virtualenv_path) }}"
-          }
+        }
       become: yes
       become_user: "{{ tlsh_virtualenv_user }}"
   when: tlsh_virtualenv_path is defined and tlsh_virtualenv_path

@@ -2,11 +2,11 @@
 
 tlsh_python_version: 3
 tlsh_build_deps:
-    - cmake
-    - make
-    - gcc
-    - g++
-    - python3-dev
+  - cmake
+  - make
+  - gcc
+  - g++
+  - python3-dev
 
 tlsh_python_pkgs:
   - python3-virtualenv

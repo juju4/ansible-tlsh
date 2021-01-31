@@ -1,11 +1,11 @@
 ---
 
 tlsh_build_deps:
-    - cmake
-    - make
-    - gcc
-    - g++
-    - python-dev
+  - cmake
+  - make
+  - gcc
+  - g++
+  - python-dev
 
 tlsh_python_bin: "python"
 tlsh_python_bindings: "/usr/local/lib/python2.7/dist-packages/tlsh.so"
