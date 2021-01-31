@@ -1,5 +1,10 @@
 ---
 
+- name: Ensure git is present
+  package:
+    name: git
+    state: present
+
 - name: git clone TrendMicro TLSH
   git:
     repo=https://github.com/trendmicro/tlsh.git
