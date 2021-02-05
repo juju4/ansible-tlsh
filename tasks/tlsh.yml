@@ -65,11 +65,18 @@
       with_items: "{{ tlsh_python_pkgs | default([ 'python-virtualenv', 'python-pip']) }}"
       register: pkg_result
       until: pkg_result is success
+    # if user exists with running process, usermod can't edit it and fails
+    - name: check if virtualenv user {{ tlsh_virtualenv_user }} exists
+      command: "grep {{ tlsh_virtualenv_user }} /etc/passwd"
+      changed_when: false
+      ignore_errors: true
+      register: haveuser
     - name: ensure virtualenv user {{ tlsh_virtualenv_user }} exists
       user:
         name: "{{ tlsh_virtualenv_user }}"
         home: "{{ tlsh_virtualenv_home }}"
         state: present
+      when: haveuser is failed and tlsh_virtualenv_user != 'root' and tlsh_virtualenv_user != 'nobody' and tlsh_virtualenv_user != 'www-data'
     - name: check if binding exists
       stat:
         path: "{{ tlsh_python_bindings }}"
