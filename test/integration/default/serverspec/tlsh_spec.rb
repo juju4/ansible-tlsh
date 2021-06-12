@@ -67,4 +67,3 @@ describe command('/opt/tools/tlsh/Testing/python_test.sh python3.4'), :if => (os
   its(:stdout) { should match /passed/ }
   its(:exit_status) { should eq 0 }
 end
-

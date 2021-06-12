@@ -30,4 +30,3 @@ end
 #  its(:stdout) { should match /passed/ }
 #  its(:exit_status) { should eq 0 }
 #end
-

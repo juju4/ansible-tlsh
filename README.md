@@ -61,4 +61,3 @@ $ vagrant ssh
 ## License
 
 BSD 2-clause
-
