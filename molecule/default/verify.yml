@@ -43,8 +43,9 @@
 
   tasks:
     - name: Check TLSH files
-      command: find /opt/tools/tlsh/lib /usr/local/lib* -iname '*tlsh*'
+      command: find /opt/tools/tlsh/lib /usr/local/lib* /usr/lib* -iname '*tlsh*'
       changed_when: false
+      failed_when: false
 
     - name: Ensure /opt/tools/tlsh/lib/libtlsh.a file is present
       stat:
