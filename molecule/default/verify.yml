@@ -43,7 +43,7 @@
 
   tasks:
     - name: Check TLSH files
-      command: find /opt/tools/tlsh/lib /usr/local/lib* /usr/lib* -iname '*tlsh*'
+      command: find /opt/tools/tlsh/lib /usr/local/lib /usr/local/lib64 /usr/lib64 -iname '*tlsh*'
       changed_when: false
       failed_when: false
 
