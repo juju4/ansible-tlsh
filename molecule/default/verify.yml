@@ -42,6 +42,10 @@
       when: (ansible_os_family == "RedHat" and ansible_distribution_major_version|int == 8)
 
   tasks:
+    - name: Check TLSH files
+      command: find /opt/tools/tlsh/lib /usr/local/lib* -iname '*tlsh*'
+      changed_when: false
+
     - name: Ensure /opt/tools/tlsh/lib/libtlsh.a file is present
       stat:
         path: /opt/tools/tlsh/lib/libtlsh.a
