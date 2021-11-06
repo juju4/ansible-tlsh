@@ -57,6 +57,8 @@ $ vagrant ssh
 
 ## Troubleshooting & Known issues
 
+* `CMake Error at test/CMakeLists.txt:90 (file):\n  file does not recognize sub-command CREATE_LINK`
+[Cmake 3.14 or above required](https://github.com/pthom/imgui_manual/issues/2) meaning it needs RHEL/Centos 8 or Ubuntu 20.04 minimum.
 
 ## License
 

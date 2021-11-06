@@ -22,10 +22,7 @@ provisioner:
 
 platforms:
   - name: ubuntu-20.04
-  - name: ubuntu-18.04
   - name: centos-8
-  - name: centos-7
-  # - name: alpine-3.4
 
 suites:
   - name: default
@@ -35,7 +32,6 @@ suites:
     run_list:
     includes:
       - ubuntu-20.04
-      - ubuntu-18.04
       - centos-8
     provisioner:
       name: ansible_playbook

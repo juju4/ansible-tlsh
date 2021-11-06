@@ -21,11 +21,7 @@ jobs:
         include:
           - molecule_distro: 'centos:8'
             experimental: true
-          - molecule_distro: 'centos:7'
-            experimental: false
           - molecule_distro: 'ubuntu:20.04'
-            experimental: false
-          - molecule_distro: 'ubuntu:18.04'
             experimental: false
     env:
       ANSIBLE_CALLBACK_WHITELIST: profile_tasks
