@@ -26,6 +26,12 @@
     mode: '0644'
   when: ansible_os_family == "RedHat" and ansible_distribution_major_version|int >= 8
 
+- name: RedHat8+ | Ensure libarchive is present - cmake archive_write_add_filter_zstd undefined symbol
+  package:
+    name: libarchive
+    state: present
+  when: ansible_os_family == "RedHat" and ansible_distribution_major_version|int >= 8
+
 - name: TLSH dependencies
   package: name={{ tlsh_build_deps }} state=present
   register: pkg_result
