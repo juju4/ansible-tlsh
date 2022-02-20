@@ -17,13 +17,18 @@
   stat: path=/usr/local/bin/tlsh
   register: tlsh
 
+- name: RedHat8+ | Check available repo
+  command: ls /etc/yum.repos.d/
+  changed_when: false
+  when: ansible_os_family == "RedHat" and ansible_distribution_major_version|int >= 8
 - name: RedHat8+ | Enable PowerTools repo
   ini_file:
-    dest: /etc/yum.repos.d/CentOS-Linux-PowerTools.repo
+    dest: "{{ tlsh_redhat_powertools_repofile }}"
     section: powertools
     option: enabled
     value: '1'
     mode: '0644'
+    create: no
   when: ansible_os_family == "RedHat" and ansible_distribution_major_version|int >= 8
 
 - name: RedHat8+ | Ensure libarchive is present - cmake archive_write_add_filter_zstd undefined symbol
