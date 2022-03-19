@@ -4,91 +4,91 @@
   hosts: tlsh
   pre_tasks:
     - name: Ubuntu 12.04 | set fact
-      set_fact:
+      ansible.builtin.set_fact:
         libso: /usr/local/lib/python2.7/dist-packages/tlsh.so
         python_test: /opt/tools/tlsh/Testing/python_test.sh
       when: (ansible_distribution == "Ubuntu" and ansible_distribution_major_version|int == 12)
     - name: Ubuntu 14.04 | set fact
-      set_fact:
+      ansible.builtin.set_fact:
         libso: /usr/local/lib/python3.4/dist-packages/tlsh.cpython-34m-x86_64-linux-gnu.so
       when: (ansible_distribution == "Ubuntu" and ansible_distribution_major_version|int == 14)
     - name: Ubuntu 16.04 | set fact
-      set_fact:
+      ansible.builtin.set_fact:
         libso: /usr/local/lib/python3.5/dist-packages/tlsh.cpython-35m-x86_64-linux-gnu.so
       when: (ansible_distribution == "Ubuntu" and ansible_distribution_major_version|int == 16)
     - name: Ubuntu 18.04 | set fact
-      set_fact:
+      ansible.builtin.set_fact:
         libso: /usr/local/lib/python3.6/dist-packages/tlsh.cpython-36m-x86_64-linux-gnu.so
         python_test: /opt/tools/tlsh/Testing/python_test.sh python3
       when: (ansible_distribution == "Ubuntu" and ansible_distribution_major_version|int == 18)
     - name: Ubuntu 20.04 | set fact
-      set_fact:
+      ansible.builtin.set_fact:
         libso: /usr/local/lib/python3.8/dist-packages/tlsh.cpython-38-x86_64-linux-gnu.so
         python_test: /opt/tools/tlsh/Testing/python_test.sh python3
       when: (ansible_distribution == "Ubuntu" and ansible_distribution_major_version|int == 20)
     - name: Centos 6 | set fact
-      set_fact:
+      ansible.builtin.set_fact:
         libso: /usr/lib64/python2.7/site-packages/tlsh.so
       when: (ansible_os_family == "RedHat" and ansible_distribution_major_version|int == 6)
     - name: Centos 7 | set fact
-      set_fact:
+      ansible.builtin.set_fact:
         libso: /usr/lib64/python3.4/site-packages/tlsh.cpython-34m.so
         python_test: /opt/tools/tlsh/Testing/python_test.sh python3.4
       when: (ansible_os_family == "RedHat" and ansible_distribution_major_version|int == 7)
     - name: Centos 8 | set fact
-      set_fact:
+      ansible.builtin.set_fact:
         libso: /usr/local/lib64/python3.6/site-packages/tlsh.cpython-36m-x86_64-linux-gnu.so
         python_test: /opt/tools/tlsh/Testing/python_test.sh python3
       when: (ansible_os_family == "RedHat" and ansible_distribution_major_version|int == 8)
 
   tasks:
     - name: Check TLSH files
-      command: find /opt/tools/tlsh/lib /usr/local/lib /usr/local/lib64 /usr/lib64 -iname '*tlsh*'
+      ansible.builtin.command: find /opt/tools/tlsh/lib /usr/local/lib /usr/local/lib64 /usr/lib64 -iname '*tlsh*'
       changed_when: false
       failed_when: false
 
     - name: Ensure /opt/tools/tlsh/lib/libtlsh.a file is present
-      stat:
+      ansible.builtin.stat:
         path: /opt/tools/tlsh/lib/libtlsh.a
       register: liba
     - name: Validate libtlsh.a present
-      assert:
+      ansible.builtin.assert:
         that: liba.stat.exists and liba.stat.size != 0
 
     - name: Ensure /opt/tools/tlsh/lib/libtlsh.so file is present
-      stat:
+      ansible.builtin.stat:
         path: /opt/tools/tlsh/lib/libtlsh.so
       register: libso
     - name: Validate libtlsh.so present
-      assert:
+      ansible.builtin.assert:
         that: libso.stat.exists and libso.stat.size != 0
       when: false
 
     - name: Tlsh version
-      command: /opt/tools/tlsh/bin/tlsh_pattern -version
+      ansible.builtin.command: /opt/tools/tlsh/bin/tlsh_pattern -version
       changed_when: false
       register: ver
     - name: Validate version command
-      assert:
+      ansible.builtin.assert:
         that: >
           "'compact hash 1 byte checksum sliding_window=' in ver.stdout and ver.rc == 0"
 
     - name: Tlsh test
-      command: /opt/tools/tlsh/Testing/test.sh
+      ansible.builtin.command: /opt/tools/tlsh/Testing/test.sh
       changed_when: false
       register: test
     - name: Validate test command
-      assert:
+      ansible.builtin.assert:
         that: >
           "'passed' in test.stdout and test.rc == 0"
 
     - name: Tlsh test extended
-      command: /opt/tools/tlsh/Testing/test.sh -xlen
+      ansible.builtin.command: /opt/tools/tlsh/Testing/test.sh -xlen
       changed_when: false
       ignore_errors: true
       register: test2
     - name: Validate test command
-      assert:
+      ansible.builtin.assert:
         that: >
           "'passed' in test2.stdout and
            'passed all example data tests' in test2.stdout and
@@ -96,11 +96,11 @@
       when: not (ansible_os_family == "RedHat" and ansible_distribution_major_version|int >= 8)
 
     - name: Tlsh python test
-      command: "{{ python_test }}"
+      ansible.builtin.command: "{{ python_test }}"
       changed_when: false
       register: test3
     - name: Validate python test command
-      assert:
+      ansible.builtin.assert:
         that: >
           "'passed' in test3.stdout and
            test3.rc == 0"

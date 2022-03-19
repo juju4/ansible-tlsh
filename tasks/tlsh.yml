@@ -1,12 +1,12 @@
 ---
 
 - name: Ensure git is present
-  package:
+  ansible.builtin.package:
     name: git
     state: present
 
 - name: git clone TrendMicro TLSH
-  git:
+  ansible.builtin.git:
     repo=https://github.com/trendmicro/tlsh.git
     dest={{ toolsetdir }}/tlsh
     version={{ tlsh_version }}
@@ -14,11 +14,11 @@
     force=no
 
 - name: Check if tlsh binary exists
-  stat: path=/usr/local/bin/tlsh
+  ansible.builtin.stat: path=/usr/local/bin/tlsh
   register: tlsh
 
 - name: RedHat8+ | Check available repo
-  command: ls /etc/yum.repos.d/
+  ansible.builtin.command: ls /etc/yum.repos.d/
   changed_when: false
   when: ansible_os_family == "RedHat" and ansible_distribution_major_version|int >= 8
 - name: RedHat8+ | Enable PowerTools repo
@@ -32,19 +32,19 @@
   when: ansible_os_family == "RedHat" and ansible_distribution_major_version|int >= 8
 
 - name: RedHat8+ | Ensure libarchive is present - cmake archive_write_add_filter_zstd undefined symbol
-  package:
+  ansible.builtin.package:
     name: libarchive
     state: present
   when: ansible_os_family == "RedHat" and ansible_distribution_major_version|int >= 8
 
 - name: TLSH dependencies
-  package: name={{ tlsh_build_deps }} state=present
+  ansible.builtin.package: name={{ tlsh_build_deps }} state=present
   register: pkg_result
   until: pkg_result is success
 
 # Change to CMakeLists.txt ?
 - name: Ensure Shared library setting as defined
-  replace:
+  ansible.builtin.replace:
     dest: "{{ toolsetdir }}/tlsh/src/CMakeLists.txt"
     regexp: '^set\(TLSH_SHARED_LIBRARY .*\)'
     replace: "set(TLSH_SHARED_LIBRARY {% if tlsh_shared_lib %}1{% else %}0{% endif %})"
@@ -52,7 +52,7 @@
     backup: yes
 
 - name: TLSH build
-  command: "./make.sh"
+  ansible.builtin.command: "./make.sh"
   args:
     chdir: "{{ toolsetdir }}/tlsh"
     creates: "{{ toolsetdir }}/tlsh/lib/libtlsh.a"
@@ -61,7 +61,7 @@
 
 - block:
     - name: TLSH Python bindings
-      command: "{{ item }}"
+      ansible.builtin.command: "{{ item }}"
       args:
         chdir: "{{ toolsetdir }}/tlsh/py_ext"
         creates: "{{ tlsh_python_bindings }}"
@@ -72,35 +72,35 @@
 
 - block:
     - name: virtualenv dependencies
-      package: name={{ item }} state=present
+      ansible.builtin.package: name={{ item }} state=present
       with_items: "{{ tlsh_python_pkgs | default([ 'python-virtualenv', 'python-pip']) }}"
       register: pkg_result
       until: pkg_result is success
     # if user exists with running process, usermod can't edit it and fails
     - name: check if virtualenv user {{ tlsh_virtualenv_user }} exists
-      command: "grep {{ tlsh_virtualenv_user }} /etc/passwd"
+      ansible.builtin.command: "grep {{ tlsh_virtualenv_user }} /etc/passwd"
       changed_when: false
       ignore_errors: true
       register: haveuser
     - name: ensure virtualenv user {{ tlsh_virtualenv_user }} exists
-      user:
+      ansible.builtin.user:
         name: "{{ tlsh_virtualenv_user }}"
         home: "{{ tlsh_virtualenv_home }}"
         state: present
       when: haveuser is failed and tlsh_virtualenv_user != 'root' and tlsh_virtualenv_user != 'nobody' and tlsh_virtualenv_user != 'www-data'
     - name: check if binding exists
-      stat:
+      ansible.builtin.stat:
         path: "{{ tlsh_python_bindings }}"
       register: tlshso
     - name: ensure directories ownership if needed, like pip cache
-      file:
+      ansible.builtin.file:
         dest: "{{ item.d }}"
         state: "{{ item.s }}"
         mode: "{{ item.m }}"
         owner: "{{ item.o }}"
       with_items: "{{ tlsh_ownership | default([]) }}"
     - name: build TLSH Python bindings - virtualenv
-      command: "{{ item.c }} chdir={{ item.d }} creates={{ item.t }}"
+      ansible.builtin.command: "{{ item.c }} chdir={{ item.d }} creates={{ item.t }}"
       with_items:
         - { c: "virtualenv -p {{ tlsh_python_bin }} {{ tlsh_virtualenv_path }}",
             d: "{{ tlsh_virtualenv_home }}",
