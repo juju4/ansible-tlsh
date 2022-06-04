@@ -22,7 +22,7 @@
   changed_when: false
   when: ansible_os_family == "RedHat" and ansible_distribution_major_version|int >= 8
 - name: RedHat8+ | Enable PowerTools repo
-  ini_file:
+  community.general.ini_file:
     dest: "{{ tlsh_redhat_powertools_repofile }}"
     section: powertools
     option: enabled
