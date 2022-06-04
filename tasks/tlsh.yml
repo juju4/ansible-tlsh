@@ -59,7 +59,8 @@
   register: build
 #  failed_when: "' Error ' in build.stderr"
 
-- block:
+- name: system python
+  block:
     - name: TLSH Python bindings
       ansible.builtin.command: "{{ item }}"
       args:
@@ -70,7 +71,8 @@
         - "{{ tlsh_python_bin }} setup.py install"
   when: tlsh_virtualenv_path is not defined or not tlsh_virtualenv_path
 
-- block:
+- name: virtualenv python
+  block:
     - name: virtualenv dependencies
       ansible.builtin.package: name={{ item }} state=present
       with_items: "{{ tlsh_python_pkgs | default([ 'python-virtualenv', 'python-pip']) }}"
