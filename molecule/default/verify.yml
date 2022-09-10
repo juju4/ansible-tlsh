@@ -7,39 +7,39 @@
       ansible.builtin.set_fact:
         libso: /usr/local/lib/python2.7/dist-packages/tlsh.so
         python_test: /opt/tools/tlsh/Testing/python_test.sh
-      when: (ansible_distribution == "Ubuntu" and ansible_distribution_major_version|int == 12)
+      when: (ansible_distribution == "Ubuntu" and ansible_distribution_major_version | int == 12)
     - name: Ubuntu 14.04 | set fact
       ansible.builtin.set_fact:
         libso: /usr/local/lib/python3.4/dist-packages/tlsh.cpython-34m-x86_64-linux-gnu.so
-      when: (ansible_distribution == "Ubuntu" and ansible_distribution_major_version|int == 14)
+      when: (ansible_distribution == "Ubuntu" and ansible_distribution_major_version | int == 14)
     - name: Ubuntu 16.04 | set fact
       ansible.builtin.set_fact:
         libso: /usr/local/lib/python3.5/dist-packages/tlsh.cpython-35m-x86_64-linux-gnu.so
-      when: (ansible_distribution == "Ubuntu" and ansible_distribution_major_version|int == 16)
+      when: (ansible_distribution == "Ubuntu" and ansible_distribution_major_version | int == 16)
     - name: Ubuntu 18.04 | set fact
       ansible.builtin.set_fact:
         libso: /usr/local/lib/python3.6/dist-packages/tlsh.cpython-36m-x86_64-linux-gnu.so
         python_test: /opt/tools/tlsh/Testing/python_test.sh python3
-      when: (ansible_distribution == "Ubuntu" and ansible_distribution_major_version|int == 18)
+      when: (ansible_distribution == "Ubuntu" and ansible_distribution_major_version | int == 18)
     - name: Ubuntu 20.04 | set fact
       ansible.builtin.set_fact:
         libso: /usr/local/lib/python3.8/dist-packages/tlsh.cpython-38-x86_64-linux-gnu.so
         python_test: /opt/tools/tlsh/Testing/python_test.sh python3
-      when: (ansible_distribution == "Ubuntu" and ansible_distribution_major_version|int == 20)
+      when: (ansible_distribution == "Ubuntu" and ansible_distribution_major_version | int == 20)
     - name: Centos 6 | set fact
       ansible.builtin.set_fact:
         libso: /usr/lib64/python2.7/site-packages/tlsh.so
-      when: (ansible_os_family == "RedHat" and ansible_distribution_major_version|int == 6)
+      when: (ansible_os_family == "RedHat" and ansible_distribution_major_version | int == 6)
     - name: Centos 7 | set fact
       ansible.builtin.set_fact:
         libso: /usr/lib64/python3.4/site-packages/tlsh.cpython-34m.so
         python_test: /opt/tools/tlsh/Testing/python_test.sh python3.4
-      when: (ansible_os_family == "RedHat" and ansible_distribution_major_version|int == 7)
+      when: (ansible_os_family == "RedHat" and ansible_distribution_major_version | int == 7)
     - name: Centos 8 | set fact
       ansible.builtin.set_fact:
         libso: /usr/local/lib64/python3.6/site-packages/tlsh.cpython-36m-x86_64-linux-gnu.so
         python_test: /opt/tools/tlsh/Testing/python_test.sh python3
-      when: (ansible_os_family == "RedHat" and ansible_distribution_major_version|int == 8)
+      when: (ansible_os_family == "RedHat" and ansible_distribution_major_version | int == 8)
 
   tasks:
     - name: Check TLSH files
@@ -93,7 +93,7 @@
           "'passed' in test2.stdout and
            'passed all example data tests' in test2.stdout and
            test2.rc == 0"
-      when: not (ansible_os_family == "RedHat" and ansible_distribution_major_version|int >= 8)
+      when: not (ansible_os_family == "RedHat" and ansible_distribution_major_version | int >= 8)
 
     - name: Tlsh python test
       ansible.builtin.command: "{{ python_test }}"

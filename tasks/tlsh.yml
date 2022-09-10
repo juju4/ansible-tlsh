@@ -5,7 +5,7 @@
     name: git
     state: present
 
-- name: git clone TrendMicro TLSH
+- name: Git clone TrendMicro TLSH
   ansible.builtin.git:
     repo=https://github.com/trendmicro/tlsh.git
     dest={{ toolsetdir }}/tlsh
@@ -20,7 +20,7 @@
 - name: RedHat8+ | Check available repo
   ansible.builtin.command: ls /etc/yum.repos.d/
   changed_when: false
-  when: ansible_os_family == "RedHat" and ansible_distribution_major_version|int >= 8
+  when: ansible_os_family == "RedHat" and ansible_distribution_major_version | int >= 8
 - name: RedHat8+ | Enable PowerTools repo
   community.general.ini_file:
     dest: "{{ tlsh_redhat_powertools_repofile }}"
@@ -29,13 +29,13 @@
     value: '1'
     mode: '0644'
     create: no
-  when: ansible_os_family == "RedHat" and ansible_distribution_major_version|int >= 8
+  when: ansible_os_family == "RedHat" and ansible_distribution_major_version | int >= 8
 
 - name: RedHat8+ | Ensure libarchive is present - cmake archive_write_add_filter_zstd undefined symbol
   ansible.builtin.package:
     name: libarchive
     state: present
-  when: ansible_os_family == "RedHat" and ansible_distribution_major_version|int >= 8
+  when: ansible_os_family == "RedHat" and ansible_distribution_major_version | int >= 8
 
 - name: TLSH dependencies
   ansible.builtin.package: name={{ tlsh_build_deps }} state=present
@@ -59,7 +59,7 @@
   register: build
 #  failed_when: "' Error ' in build.stderr"
 
-- name: system python
+- name: System python
   block:
     - name: TLSH Python bindings
       ansible.builtin.command: "{{ item }}"
@@ -71,37 +71,37 @@
         - "{{ tlsh_python_bin }} setup.py install"
   when: tlsh_virtualenv_path is not defined or not tlsh_virtualenv_path
 
-- name: virtualenv python
+- name: Virtualenv python
   block:
-    - name: virtualenv dependencies
+    - name: Virtualenv dependencies
       ansible.builtin.package: name={{ item }} state=present
-      with_items: "{{ tlsh_python_pkgs | default([ 'python-virtualenv', 'python-pip']) }}"
+      with_items: "{{ tlsh_python_pkgs | default(['python-virtualenv', 'python-pip']) }}"
       register: pkg_result
       until: pkg_result is success
     # if user exists with running process, usermod can't edit it and fails
-    - name: check if virtualenv user {{ tlsh_virtualenv_user }} exists
+    - name: Check if virtualenv user {{ tlsh_virtualenv_user }} exists
       ansible.builtin.command: "grep {{ tlsh_virtualenv_user }} /etc/passwd"
       changed_when: false
       ignore_errors: true
       register: haveuser
-    - name: ensure virtualenv user {{ tlsh_virtualenv_user }} exists
+    - name: Ensure virtualenv user {{ tlsh_virtualenv_user }} exists
       ansible.builtin.user:
         name: "{{ tlsh_virtualenv_user }}"
         home: "{{ tlsh_virtualenv_home }}"
         state: present
       when: haveuser is failed and tlsh_virtualenv_user != 'root' and tlsh_virtualenv_user != 'nobody' and tlsh_virtualenv_user != 'www-data'
-    - name: check if binding exists
+    - name: Check if binding exists
       ansible.builtin.stat:
         path: "{{ tlsh_python_bindings }}"
       register: tlshso
-    - name: ensure directories ownership if needed, like pip cache
+    - name: Ensure directories ownership if needed, like pip cache
       ansible.builtin.file:
         dest: "{{ item.d }}"
         state: "{{ item.s }}"
         mode: "{{ item.m }}"
         owner: "{{ item.o }}"
       with_items: "{{ tlsh_ownership | default([]) }}"
-    - name: build TLSH Python bindings - virtualenv
+    - name: Build TLSH Python bindings - virtualenv
       ansible.builtin.command: "{{ item.c }} chdir={{ item.d }} creates={{ item.t }}"
       with_items:
         - { c: "virtualenv -p {{ tlsh_python_bin }} {{ tlsh_virtualenv_path }}",
