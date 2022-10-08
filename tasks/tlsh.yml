@@ -7,14 +7,15 @@
 
 - name: Git clone TrendMicro TLSH
   ansible.builtin.git:
-    repo=https://github.com/trendmicro/tlsh.git
-    dest={{ toolsetdir }}/tlsh
-    version={{ tlsh_version }}
-    update={{ tlsh_git_update | default('no') }}
-    force=no
+    repo: https://github.com/trendmicro/tlsh.git
+    dest: "{{ toolsetdir }}/tlsh"
+    version: "{{ tlsh_version }}"
+    update: "{{ tlsh_git_update | default('no') }}"
+    force: "no"
 
 - name: Check if tlsh binary exists
-  ansible.builtin.stat: path=/usr/local/bin/tlsh
+  ansible.builtin.stat:
+    path: "/usr/local/bin/tlsh"
   register: tlsh
 
 - name: RedHat8+ | Check available repo
@@ -38,7 +39,9 @@
   when: ansible_os_family == "RedHat" and ansible_distribution_major_version | int >= 8
 
 - name: TLSH dependencies
-  ansible.builtin.package: name={{ tlsh_build_deps }} state=present
+  ansible.builtin.package:
+    name: "{{ tlsh_build_deps }}"
+    state: present
   register: pkg_result
   until: pkg_result is success
 
@@ -60,6 +63,7 @@
 #  failed_when: "' Error ' in build.stderr"
 
 - name: System python
+  when: tlsh_virtualenv_path is not defined or not tlsh_virtualenv_path
   block:
     - name: TLSH Python bindings
       ansible.builtin.command: "{{ item }}"
@@ -69,22 +73,24 @@
       with_items:
         - "{{ tlsh_python_bin }} setup.py build"
         - "{{ tlsh_python_bin }} setup.py install"
-  when: tlsh_virtualenv_path is not defined or not tlsh_virtualenv_path
 
 - name: Virtualenv python
+  when: tlsh_virtualenv_path is defined and tlsh_virtualenv_path
   block:
     - name: Virtualenv dependencies
-      ansible.builtin.package: name={{ item }} state=present
+      ansible.builtin.package:
+        name: "{{ item }}"
+        state: "present"
       with_items: "{{ tlsh_python_pkgs | default(['python-virtualenv', 'python-pip']) }}"
       register: pkg_result
       until: pkg_result is success
     # if user exists with running process, usermod can't edit it and fails
-    - name: Check if virtualenv user {{ tlsh_virtualenv_user }} exists
+    - name: Check if virtualenv user exists - {{ tlsh_virtualenv_user }}
       ansible.builtin.command: "grep {{ tlsh_virtualenv_user }} /etc/passwd"
       changed_when: false
       ignore_errors: true
       register: haveuser
-    - name: Ensure virtualenv user {{ tlsh_virtualenv_user }} exists
+    - name: Ensure virtualenv user exists - {{ tlsh_virtualenv_user }}
       ansible.builtin.user:
         name: "{{ tlsh_virtualenv_user }}"
         home: "{{ tlsh_virtualenv_home }}"
@@ -102,7 +108,10 @@
         owner: "{{ item.o }}"
       with_items: "{{ tlsh_ownership | default([]) }}"
     - name: Build TLSH Python bindings - virtualenv
-      ansible.builtin.command: "{{ item.c }} chdir={{ item.d }} creates={{ item.t }}"
+      ansible.builtin.command: "{{ item.c }}"
+      args:
+        chdir: "{{ item.d }}"
+        creates: "{{ item.t }}"
       with_items:
         - { c: "virtualenv -p {{ tlsh_python_bin }} {{ tlsh_virtualenv_path }}",
             d: "{{ tlsh_virtualenv_home }}",
@@ -114,4 +123,3 @@
         }
       become: yes
       become_user: "{{ tlsh_virtualenv_user }}"
-  when: tlsh_virtualenv_path is defined and tlsh_virtualenv_path

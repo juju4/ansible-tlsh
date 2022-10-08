@@ -7,4 +7,5 @@
   ansible.builtin.include_vars: "{{ ansible_distribution }}-{{ ansible_distribution_version.split('.')[0] }}.yml"
   when: ansible_os_family == "RedHat"
 
-- import_tasks: tlsh.yml
+- name: Import tlsh
+  ansible.builtin.import_tasks: tlsh.yml
