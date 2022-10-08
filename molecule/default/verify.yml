@@ -26,6 +26,11 @@
         libso: /usr/local/lib/python3.8/dist-packages/tlsh.cpython-38-x86_64-linux-gnu.so
         python_test: /opt/tools/tlsh/Testing/python_test.sh python3
       when: (ansible_distribution == "Ubuntu" and ansible_distribution_major_version | int == 20)
+    - name: Ubuntu 20.04 | set fact
+      ansible.builtin.set_fact:
+        libso: /usr/local/lib/python3.10/dist-packages/tlsh.cpython-310-x86_64-linux-gnu.so
+        python_test: /opt/tools/tlsh/Testing/python_test.sh python3
+      when: (ansible_distribution == "Ubuntu" and ansible_distribution_major_version | int == 22)
     - name: Centos 6 | set fact
       ansible.builtin.set_fact:
         libso: /usr/lib64/python2.7/site-packages/tlsh.so
@@ -95,6 +100,11 @@
            test2.rc == 0"
       when: not (ansible_os_family == "RedHat" and ansible_distribution_major_version | int >= 8)
 
+    - name: Find Tlsh so
+      ansible.builtin.command: find /usr/local/lib* /usr/lib* /opt -iname 'tlsh*.so'
+      changed_when: false
+      failed_when: false
+      register: test3
     - name: Tlsh python test
       ansible.builtin.command: "{{ python_test }}"
       changed_when: false
