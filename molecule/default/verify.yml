@@ -26,11 +26,16 @@
         libso: /usr/local/lib/python3.8/dist-packages/tlsh.cpython-38-x86_64-linux-gnu.so
         python_test: /opt/tools/tlsh/Testing/python_test.sh python3
       when: (ansible_distribution == "Ubuntu" and ansible_distribution_major_version | int == 20)
-    - name: Ubuntu 20.04 | set fact
+    - name: Ubuntu 22.04 | set fact
       ansible.builtin.set_fact:
         libso: /usr/local/lib/python3.10/dist-packages/tlsh.cpython-310-x86_64-linux-gnu.so
         python_test: /opt/tools/tlsh/Testing/python_test.sh python3
       when: (ansible_distribution == "Ubuntu" and ansible_distribution_major_version | int == 22)
+    - name: Ubuntu 24.04 | set fact
+      ansible.builtin.set_fact:
+        libso: /usr/local/lib/python3.12/dist-packages/tlsh.cpython-312-x86_64-linux-gnu.so
+        python_test: /opt/tools/tlsh/Testing/python_test.sh python3
+      when: (ansible_distribution == "Ubuntu" and ansible_distribution_major_version | int == 24)
     - name: Centos 6 | set fact
       ansible.builtin.set_fact:
         libso: /usr/lib64/python2.7/site-packages/tlsh.so
@@ -45,6 +50,16 @@
         libso: /usr/local/lib64/python3.6/site-packages/tlsh.cpython-36m-x86_64-linux-gnu.so
         python_test: /opt/tools/tlsh/Testing/python_test.sh python3
       when: (ansible_os_family == "RedHat" and ansible_distribution_major_version | int == 8)
+    - name: RedHat 9 | set fact
+      ansible.builtin.set_fact:
+        libso: /usr/local/lib64/python3.9/site-packages/tlsh.cpython-39m-x86_64-linux-gnu.so
+        python_test: /opt/tools/tlsh/Testing/python_test.sh python3
+      when: (ansible_os_family == "RedHat" and ansible_distribution_major_version | int == 9)
+    - name: Debian 12 | set fact
+      ansible.builtin.set_fact:
+        libso: /usr/local/lib/python3.11/dist-packages/tlsh.cpython-311-x86_64-linux-gnu.so
+        python_test: /opt/tools/tlsh/Testing/python_test.sh python3
+      when: (ansible_distribution == "Debian" and ansible_distribution_major_version | int == 12)
 
   tasks:
     - name: Check TLSH files
