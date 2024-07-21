@@ -7,6 +7,7 @@ tlsh_build_deps:
   - gcc
   - g++
   - python3-dev
+  - python3-pip
 
 tlsh_python_pkgs:
   - python3-virtualenv
