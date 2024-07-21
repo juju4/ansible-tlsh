@@ -1,0 +1,16 @@
+---
+
+tlsh_python_version: 3
+tlsh_build_deps:
+  - cmake
+  - make
+  - gcc
+  - g++
+  - python3-dev
+
+tlsh_python_pkgs:
+  - python3-virtualenv
+  - python3-pip
+
+tlsh_python_bin: "python3"
+tlsh_python_bindings: "{% if tlsh_virtualenv_path | string %}{{ tlsh_virtualenv_path }}/lib/python3.12/site-packages/tlsh.cpython-312-x86_64-linux-gnu.so{% else %}/usr/local/lib/python3.12/dist-packages/tlsh.cpython-312-x86_64-linux-gnu.so{% endif %}"
