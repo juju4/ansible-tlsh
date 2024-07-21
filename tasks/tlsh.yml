@@ -73,15 +73,20 @@
       with_items:
         - "{{ tlsh_python_bin }} setup.py build"
         - "{{ tlsh_python_bin }} setup.py install"
-      when:
-        - not (ansible_distribution == 'Ubuntu' and ansible_distribution_major_version|int == 24)
+      when: >
+        not ((ansible_distribution == 'Ubuntu' and ansible_distribution_major_version|int == 24) or
+          (ansible_distribution == 'Debian' and ansible_distribution_major_version|int == 12)
+        )
     - name: Pip | TLSH Python bindings  # PEP 632
       ansible.builtin.command: "{{ tlsh_python_pip | default('pip3') }} install ."
       args:
         chdir: "{{ toolsetdir }}/tlsh/py_ext"
         creates: "{{ tlsh_python_bindings }}"
-      when:
-        - (ansible_distribution == 'Ubuntu' and ansible_distribution_major_version|int == 24)
+      when: >
+        ((ansible_distribution == 'Ubuntu' and ansible_distribution_major_version|int == 24) or
+          (ansible_distribution == 'Debian' and ansible_distribution_major_version|int == 12)
+        )
+    - name: Pip | Build TLSH Python bindings - virtualenv
 
 - name: Virtualenv python
   when: tlsh_virtualenv_path is defined and tlsh_virtualenv_path
@@ -132,8 +137,10 @@
         }
       become: yes
       become_user: "{{ tlsh_virtualenv_user }}"
-      when:
-        - not (ansible_distribution == 'Ubuntu' and ansible_distribution_major_version|int == 24)
+      when: >
+        not ((ansible_distribution == 'Ubuntu' and ansible_distribution_major_version|int == 24) or
+          (ansible_distribution == 'Debian' and ansible_distribution_major_version|int == 12)
+        )
     - name: Pip | Build TLSH Python bindings - virtualenv
       ansible.builtin.command: "{{ item.c }}"
       args:
@@ -150,5 +157,7 @@
         }
       become: yes
       become_user: "{{ tlsh_virtualenv_user }}"
-      when:
-        - (ansible_distribution == 'Ubuntu' and ansible_distribution_major_version|int == 24)
+      when: >
+        ((ansible_distribution == 'Ubuntu' and ansible_distribution_major_version|int == 24) or
+          (ansible_distribution == 'Debian' and ansible_distribution_major_version|int == 12)
+        )
