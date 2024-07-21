@@ -49,6 +49,30 @@
 - name: System python
   when: tlsh_virtualenv_path is not defined or not tlsh_virtualenv_path
   block:
+    - name: Check if existing python bindings
+      ansible.builtin.command: "find /usr/lib/ /usr/local/lib/ -iname 'tlsh*'"
+      register: find
+      changed_when: false
+      failed_when: false
+    - name: Find result
+      ansible.builtin.debug:
+        var: find
+    - name: Pip show
+      ansible.builtin.command: "{{ tlsh_python_pip | default('pip3') }} show tlsh"
+      register: pipshow
+      changed_when: false
+      failed_when: false
+    - name: Pip show result
+      ansible.builtin.debug:
+        var: pipshow
+    # https://www.jeffgeerling.com/blog/2023/how-solve-error-externally-managed-environment-when-installing-pip3
+    - name: Ignore PEP 668
+      ansible.builtin.file:
+        path: "/usr/lib/python{{ tlsh_python_version_full | default('3.12') }}/EXTERNALLY-MANAGED"
+        state: absent
+      when: >
+        (ansible_distribution == 'Ubuntu' and ansible_distribution_major_version|int == 24) or
+        (ansible_distribution == 'Debian' and ansible_distribution_major_version|int == 12)
     - name: Setup.py | TLSH Python bindings
       ansible.builtin.command: "{{ item }}"
       args:
