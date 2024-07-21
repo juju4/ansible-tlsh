@@ -22,15 +22,31 @@
   ansible.builtin.command: ls /etc/yum.repos.d/
   changed_when: false
   when: ansible_os_family == "RedHat" and ansible_distribution_major_version | int >= 8
-- name: RedHat8+ | Enable PowerTools repo
-  community.general.ini_file:
-    dest: "{{ tlsh_redhat_powertools_repofile }}"
-    section: powertools
-    option: enabled
-    value: '1'
-    mode: '0644'
-    create: no
-  when: ansible_os_family == "RedHat" and ansible_distribution_major_version | int >= 8
+- name: RedHat9 | Enable PowerTools repo
+  ansible.builtin.command:  # noqa no-changed-when
+    cmd: dnf config-manager --enable crb
+  become: yes
+  when:
+    - ansible_os_family == "RedHat"
+    - ansible_distribution_major_version | int == 9
+
+- name: RedHat8 | Enable PowerTools repo
+  ansible.builtin.command:  # noqa no-changed-when
+    cmd: dnf config-manager --set-enabled powertools
+  become: yes
+  when:
+    - ansible_os_family == "RedHat"
+    - ansible_distribution_major_version | int == 8
+
+- name: Check available repositories - list
+  ansible.builtin.command: ls -l /etc/yum.repos.d/
+  changed_when: false
+- name: Check available repositories
+  ansible.builtin.command: dnf repolist
+  changed_when: false
+  when:
+    - ansible_os_family == "RedHat"
+    - ansible_distribution_major_version | int >= 8
 
 - name: RedHat8+ | Ensure libarchive is present - cmake archive_write_add_filter_zstd undefined symbol
   ansible.builtin.package:
