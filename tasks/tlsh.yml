@@ -102,7 +102,6 @@
         ((ansible_distribution == 'Ubuntu' and ansible_distribution_major_version|int == 24) or
           (ansible_distribution == 'Debian' and ansible_distribution_major_version|int == 12)
         )
-    - name: Pip | Build TLSH Python bindings - virtualenv
 
 - name: Virtualenv python
   when: tlsh_virtualenv_path is defined and tlsh_virtualenv_path
