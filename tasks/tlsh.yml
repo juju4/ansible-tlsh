@@ -96,7 +96,9 @@
         )
 
 - name: Virtualenv python
-  when: tlsh_virtualenv_path is defined and tlsh_virtualenv_path
+  when:
+    - tlsh_virtualenv_path is defined
+    - tlsh_virtualenv_path | length > 0
   block:
     - name: Virtualenv dependencies
       ansible.builtin.package:

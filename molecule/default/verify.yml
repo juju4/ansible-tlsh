@@ -90,8 +90,9 @@
       register: ver
     - name: Validate version command
       ansible.builtin.assert:
-        that: >
-          "'compact hash 1 byte checksum sliding_window=' in ver.stdout and ver.rc == 0"
+        that:
+          - "'compact hash 1 byte checksum sliding_window=' in ver.stdout"
+          - ver.rc == 0
 
     - name: Tlsh test
       ansible.builtin.command: /opt/tools/tlsh/Testing/test.sh
@@ -99,8 +100,9 @@
       register: test
     - name: Validate test command
       ansible.builtin.assert:
-        that: >
-          "'passed' in test.stdout and test.rc == 0"
+        that:
+          - "'passed' in test.stdout"
+          - test.rc == 0
 
     - name: Tlsh test extended
       ansible.builtin.command: /opt/tools/tlsh/Testing/test.sh -xlen
@@ -109,10 +111,10 @@
       register: test2
     - name: Validate test command
       ansible.builtin.assert:
-        that: >
-          "'passed' in test2.stdout and
-           'passed all example data tests' in test2.stdout and
-           test2.rc == 0"
+        that:
+          - "'passed' in test2.stdout"
+          - "'passed all example data tests' in test2.stdout"
+          - test2.rc == 0
       when: not (ansible_os_family == "RedHat" and ansible_distribution_major_version | int >= 8)
 
     - name: Find Tlsh so
@@ -126,6 +128,6 @@
       register: test3
     - name: Validate python test command
       ansible.builtin.assert:
-        that: >
-          "'passed' in test3.stdout and
-           test3.rc == 0"
+        that:
+          - "'passed' in test3.stdout"
+          - test3.rc == 0
