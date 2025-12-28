@@ -109,7 +109,7 @@
       changed_when: false
       ignore_errors: true
       register: test2
-    - name: Validate test command
+    - name: Validate test command - extended
       ansible.builtin.assert:
         that:
           - "'passed' in test2.stdout"
