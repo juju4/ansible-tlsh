@@ -20,7 +20,7 @@
 
 - name: RedHat
   ansible.builtin.include_tasks: redhat.yml
-  when: ansible_os_family == "RedHat"
+  when: ansible_facts['os_family'] == "RedHat"
 
 - name: TLSH dependencies
   ansible.builtin.package:
@@ -71,8 +71,8 @@
         path: "/usr/lib/python{{ tlsh_python_version_full | default('3.12') }}/EXTERNALLY-MANAGED"
         state: absent
       when: >
-        (ansible_distribution == 'Ubuntu' and ansible_distribution_major_version|int == 24) or
-        (ansible_distribution == 'Debian' and ansible_distribution_major_version|int == 12)
+        (ansible_facts['distribution'] == 'Ubuntu' and ansible_facts['distribution_major_version']|int == 24) or
+        (ansible_facts['distribution'] == 'Debian' and ansible_facts['distribution_major_version']|int == 12)
     - name: Setup.py | TLSH Python bindings
       ansible.builtin.command: "{{ item }}"
       args:
@@ -82,8 +82,8 @@
         - "{{ tlsh_python_bin }} setup.py build"
         - "{{ tlsh_python_bin }} setup.py install"
       when: >
-        not ((ansible_distribution == 'Ubuntu' and ansible_distribution_major_version|int == 24) or
-          (ansible_distribution == 'Debian' and ansible_distribution_major_version|int == 12)
+        not ((ansible_facts['distribution'] == 'Ubuntu' and ansible_facts['distribution_major_version']|int == 24) or
+          (ansible_facts['distribution'] == 'Debian' and ansible_facts['distribution_major_version']|int == 12)
         )
     - name: Pip | TLSH Python bindings  # PEP 632
       ansible.builtin.command: "{{ tlsh_python_pip | default('pip3') }} install ."
@@ -91,8 +91,8 @@
         chdir: "{{ toolsetdir }}/tlsh/py_ext"
         creates: "{{ tlsh_python_bindings }}"
       when: >
-        ((ansible_distribution == 'Ubuntu' and ansible_distribution_major_version|int == 24) or
-          (ansible_distribution == 'Debian' and ansible_distribution_major_version|int == 12)
+        ((ansible_facts['distribution'] == 'Ubuntu' and ansible_facts['distribution_major_version']|int == 24) or
+          (ansible_facts['distribution'] == 'Debian' and ansible_facts['distribution_major_version']|int == 12)
         )
 
 - name: Virtualenv python
@@ -147,8 +147,8 @@
       become: yes
       become_user: "{{ tlsh_virtualenv_user }}"
       when: >
-        not ((ansible_distribution == 'Ubuntu' and ansible_distribution_major_version|int == 24) or
-          (ansible_distribution == 'Debian' and ansible_distribution_major_version|int == 12)
+        not ((ansible_facts['distribution'] == 'Ubuntu' and ansible_facts['distribution_major_version']|int == 24) or
+          (ansible_facts['distribution'] == 'Debian' and ansible_facts['distribution_major_version']|int == 12)
         )
     - name: Pip | Build TLSH Python bindings - virtualenv
       ansible.builtin.command: "{{ item.c }}"
@@ -167,6 +167,6 @@
       become: yes
       become_user: "{{ tlsh_virtualenv_user }}"
       when: >
-        ((ansible_distribution == 'Ubuntu' and ansible_distribution_major_version|int == 24) or
-          (ansible_distribution == 'Debian' and ansible_distribution_major_version|int == 12)
+        ((ansible_facts['distribution'] == 'Ubuntu' and ansible_facts['distribution_major_version']|int == 24) or
+          (ansible_facts['distribution'] == 'Debian' and ansible_facts['distribution_major_version']|int == 12)
         )
