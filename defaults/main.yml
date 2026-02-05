@@ -2,7 +2,7 @@
 
 toolsetdir: /opt/tools
 # renovate: datasource=github-releases depName=trendmicro/tlsh
-tlsh_version: '4.12.0'
+tlsh_version: '4.12.1'
 # https://github.com/trendmicro/tlsh/commit/fc5dad10a9df4dadb3e5de01dedec0c9e1619711#diff-95e351a3805a1dafa85bf20b81d086e6R60
 tlsh_shared_lib: true
 
